@@ -1,0 +1,88 @@
+# sbt specific files
+target/
+lib_managed/
+src_managed/
+project/target/
+project/project/
+
+# IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+
+# Eclipse
+.metadata/
+*.tmp
+*.bak
+*.swp
+*~.nib
+.localstore
+/.recommenders
+
+# Scala-IDE specific
+.scala_dependencies
+.worksheet
+
+# Temporary files created by Eclipse
+.classpath
+.project
+.settings/
+
+# Compiled class file
+*.class
+
+# Log file
+*.log
+
+# Other IDEs and Editors
+.c9/
+.project
+*.tmproj
+*.tmproject
+.tern-port
+*.codekit-cache
+codekit-cache
+__reloader.pid
+.reloader
+.spyderproject
+.spyproject
+*.py[cod]
+*.cover
+.cache
+.vscode/
+.ionide/
+.atom/
+.tern-port
+*.pdm
+*.coverage
+.coverage.*
+/.vs/
+.vscode/
+.vscode-oss/
+code-oss
+*.js.map
+*.ipynb
+*.idea
+*.iml
+*.sublime*
+*.tmTheme
+*.tmTheme-editor
+*.tmTheme-new
+*.tmTheme-sublime
+.sublime/
+.tern-project
+.idea_modules
+.tmproj
+
+# Package Files #
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+
