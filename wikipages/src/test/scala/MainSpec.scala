@@ -1,4 +1,7 @@
+import http.HttpUtils
 import org.scalatest.flatspec.AnyFlatSpec
+import org.mockito.scalatest.MockitoSugar
+import scalaj.http.{HttpRequest, HttpResponse}
 
 class MainSpec extends AnyFlatSpec {
   "formatUrl" should "return the correct URL" in {
@@ -70,5 +73,92 @@ class MainSpec extends AnyFlatSpec {
     val result = Main.parseArguments(args)
 
     assert(result.contains(Config(keyword = testKeyword, limit = testLimit)))
+  }
+
+  "getPages" should "return Right with body if response code is 200" in {
+    val url =
+      "https://en.wikipedia.org/w/api.php?action=query&format=json&prop=&sroffset=0&list=search&srsearch=Scala&srlimit=10"
+    val result = Main.getPages(MockHttpUtils, url)
+    result.contains(
+      Right(
+        """{"query":{"search":[{"title":"Scala","wordcount":100},{"title":"Java","wordcount":200}]}}"""
+      )
+    )
+  }
+
+  it should "return Left with code if response code is 404 for non-Wikipedia URLs" in {
+    val url = "https://example.com/api"
+    val result = Main.getPages(MockHttpUtils, url)
+    assert(result.equals(Left(404)))
+  }
+
+  it should "return different results for different Wikipedia search queries" in {
+    val urlScala =
+      "https://en.wikipedia.org/w/api.php?action=query&format=json&prop=&sroffset=0&list=search&srsearch=Scala&srlimit=10"
+    val resultScala = Main.getPages(MockHttpUtils, urlScala)
+    /* SHOULD BE -> Scala et Java */
+    resultScala.contains(
+      Right(
+        """{"query":{"search":[{"title":"Scala","wordcount":100},{"title":"Java","wordcount":200}]}}"""
+      )
+    )
+
+    /* SHOULD BE -> Java et Kotlin */
+    val urlJava =
+      "https://en.wikipedia.org/w/api.php?action=query&format=json&prop=&sroffset=0&list=search&srsearch=Java&srlimit=10"
+    val resultJava = Main.getPages(MockHttpUtils, urlJava)
+    resultJava.contains(
+      Right(
+        """{"query":{"search":[{"title":"Java","wordcount":200},{"title":"Kotlin","wordcount":150}]}}"""
+      )
+    )
+
+    /* SHOULD BE -> Python et Django */
+    val urlPython =
+      "https://en.wikipedia.org/w/api.php?action=query&format=json&prop=&sroffset=0&list=search&srsearch=Python&srlimit=10"
+    val resultPython = Main.getPages(MockHttpUtils, urlPython)
+    resultPython.contains(
+      Right(
+        """{"query":{"search":[{"title":"Python","wordcount":250},{"title":"Django","wordcount":180}]}}"""
+      )
+    )
+  }
+}
+
+object MockHttpUtils extends HttpUtils with MockitoSugar {
+
+  override def parse(url: String): HttpRequest = {
+    val mockRequest = mock[HttpRequest]
+
+    if (!url.contains("wikipedia.org")) {
+      val mockHttpResponse = new HttpResponse[String](
+        "Error",
+        404,
+        Map.empty[String, IndexedSeq[String]]
+      )
+      when(mockRequest.asString).thenReturn(mockHttpResponse)
+    } else if (url.contains("srsearch=Scala")) {
+      val mockHttpResponse = new HttpResponse[String](
+        """{"query":{"search":[{"title":"Scala","wordcount":100},{"title":"Java","wordcount":200}]}}""",
+        200,
+        Map.empty[String, IndexedSeq[String]]
+      )
+      when(mockRequest.asString).thenReturn(mockHttpResponse)
+    } else if (url.contains("srsearch=Java")) {
+      val mockHttpResponse = new HttpResponse[String](
+        """{"query":{"search":[{"title":"Java","wordcount":200},{"title":"Kotlin","wordcount":150}]}}""",
+        200,
+        Map.empty[String, IndexedSeq[String]]
+      )
+      when(mockRequest.asString).thenReturn(mockHttpResponse)
+    } else if (url.contains("srsearch=Python")) {
+      val mockHttpResponse = new HttpResponse[String](
+        """{"query":{"search":[{"title":"Python","wordcount":250},{"title":"Django","wordcount":180}]}}""",
+        200,
+        Map.empty[String, IndexedSeq[String]]
+      )
+      when(mockRequest.asString).thenReturn(mockHttpResponse)
+    }
+    mockRequest
   }
 }

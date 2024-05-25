@@ -1,4 +1,5 @@
-import scalaj.http.Http
+import http.{HttpUtils, HttpUtilsImpl}
+import scalaj.http.{Http, HttpRequest}
 import scopt.OParser
 import play.api.libs.json.{JsArray, Json}
 
@@ -7,8 +8,10 @@ case class Config(limit: Int = 10, keyword: String = "")
 case class WikiPage(title: String, words: Int)
 
 object Main extends App {
+  val httpUtils = HttpUtilsImpl
+
   parseArguments(args) match {
-    case Some(config) => run(config)
+    case Some(config) => run(config, httpUtils)
     case _            => println("Unable to parse arguments")
   }
 
@@ -32,12 +35,12 @@ object Main extends App {
     OParser.parse(parser, args, Config())
   }
 
-  def run(config: Config): Unit = {
+  def run(config: Config, httpUtils: HttpUtils): Unit = {
     // println(config)
 
     val url = formatUrl(config.keyword, config.limit)
 
-    getPages(url) match {
+    getPages(httpUtils, url) match {
       case Left(errorCode) => println(s"Une erreur est survenue : $errorCode")
       case Right(body) =>
         val pages = parseJson(body)
@@ -57,8 +60,8 @@ object Main extends App {
     s"https://en.wikipedia.org/w/api.php?action=query&format=json&prop=&sroffset=0&list=search&srsearch=${keyword}&srlimit=${limit}"
   }
 
-  def getPages(url: String): Either[Int, String] = {
-    val result = Http(url).asString
+  def getPages(httpUtils: HttpUtils, url: String): Either[Int, String] = {
+    val result = httpUtils.parse(url).asString
     if (result.code != 200) {
       Left(result.code)
     } else {
