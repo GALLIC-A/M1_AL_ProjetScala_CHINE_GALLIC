@@ -11,4 +11,17 @@ class MainSpec extends AnyFlatSpec {
 
     assert(actualUrl == expectedUrl)
   }
+
+  "parseJson" should "return a list of WikiPage objects" in {
+    val fakeDatas =
+      """{"query":{"search":[{"title":"Scala","wordcount":100},{"title":"Java","wordcount":200}]}}"""
+    val expectedPages = Seq(
+      WikiPage("Scala", 100),
+      WikiPage("Java", 200)
+    )
+
+    val actualPages = Main.parseJson(fakeDatas)
+
+    assert(actualPages == expectedPages)
+  }
 }
