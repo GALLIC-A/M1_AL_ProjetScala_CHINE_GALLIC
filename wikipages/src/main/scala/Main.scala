@@ -13,7 +13,15 @@ object Main extends App {
     val parser = {
       import builder._
       OParser.sequence(
-        programName("WikiStats")
+        programName("WikiStats"),
+        head("WikiStats", "1.0"),
+        opt[Int]('l', "limit")
+          .withFallback(() => 10) // Valeur par défaut : 10
+          .action((l, c) => c.copy(limit = l)),
+        opt[String]('k', "keyword")
+          .required()
+          .withFallback(() => "Scala") // Valeur par défaut : "Scala"
+          .action((k, c) => c.copy(keyword = k)),
       )
     }
 
