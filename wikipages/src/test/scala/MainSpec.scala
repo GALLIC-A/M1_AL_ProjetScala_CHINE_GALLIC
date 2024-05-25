@@ -46,4 +46,29 @@ class MainSpec extends AnyFlatSpec {
 
     assert(total == expectedTotal)
   }
+
+  "parseArguments" should "return None for unparsable arguments" in {
+    val args = Array("--invalid-arg")
+    val result = Main.parseArguments(args)
+    assert(result.isEmpty)
+  }
+
+  it should "return Config with keyword and default limit for keyword-only argument" in {
+    val testKeyword = "scala"
+    val args = Array("-k", testKeyword)
+
+    val result = Main.parseArguments(args)
+
+    assert(result.contains(Config(keyword = testKeyword)))
+  }
+
+  it should "return Config with keyword and limit for keyword and limit arguments" in {
+    val testKeyword = "scala"
+    val testLimit = 5
+    val args = Array("-k", testKeyword, "-l", testLimit.toString)
+
+    val result = Main.parseArguments(args)
+
+    assert(result.contains(Config(keyword = testKeyword, limit = testLimit)))
+  }
 }
