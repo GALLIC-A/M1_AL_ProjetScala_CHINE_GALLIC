@@ -1,16 +1,17 @@
 # sbt specific files
-target/
-lib_managed/
-src_managed/
-project/target/
-project/project/
+wikipages/target/
+wikipages/lib_managed/
+wikipages/src_managed/
+wikipages/project/target/
+wikipages/project/project/
+wikipages/.bsp/
 
 # IntelliJ IDEA
-.idea/
-*.iws
-*.iml
-*.ipr
-out/
+wikipages/.idea/
+wikipages/*.iws
+wikipages/*.iml
+wikipages/*.ipr
+wikipages/out/
 
 # Eclipse
 .metadata/
@@ -22,19 +23,19 @@ out/
 /.recommenders
 
 # Scala-IDE specific
-.scala_dependencies
-.worksheet
+wikipages/.scala_dependencies
+wikipages/.worksheet
 
 # Temporary files created by Eclipse
-.classpath
-.project
-.settings/
+wikipages/.classpath
+wikipages/.project
+wikipages/.settings/
 
 # Compiled class file
-*.class
+wikipages/*.class
 
 # Log file
-*.log
+wikipages/*.log
 
 # Other IDEs and Editors
 .c9/
@@ -77,12 +78,12 @@ code-oss
 .tmproj
 
 # Package Files #
-*.jar
 *.war
 *.nar
 *.ear
 *.zip
 *.tar.gz
 *.rar
+*.jar
 
 
