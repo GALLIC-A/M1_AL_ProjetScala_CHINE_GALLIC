@@ -1,3 +1,4 @@
+import scalaj.http.Http
 import scopt.OParser
 
 case class Config(limit: Int = 10, keyword: String = "")
@@ -34,5 +35,14 @@ object Main extends App {
 
   def formatUrl(keyword: String, limit: Int): String = {
     s"https://en.wikipedia.org/w/api.php?action=query&format=json&prop=&sroffset=0&list=search&srsearch=${keyword}&srlimit=${limit}"
+  }
+
+  def getPages(url: String): Either[Int, String] = {
+    val result = Http(url).asString
+    if(result.code != 200) {
+      Left(result.code)
+    } else {
+      Right(result.body)
+    }
   }
 }
