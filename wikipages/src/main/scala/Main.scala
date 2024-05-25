@@ -36,13 +36,19 @@ object Main extends App {
     // println(config)
 
     val url = formatUrl(config.keyword, config.limit)
+
     getPages(url) match {
       case Left(errorCode) => println(s"Une erreur est survenue : $errorCode")
       case Right(body) =>
         val pages = parseJson(body)
-        println(s"Nombre de pages trouvées : ${pages.length}")
+        println(s"Nombre de pages trouvees : ${pages.length}")
         pages.foreach(page =>
           println(s"Titre : ${page.title}, Nombre de mots : ${page.words}")
+        )
+        println(s"Nombre total de mots : ${totalWords(pages)}")
+        println(
+          s"Nombre de mots moyen par page : ${if (pages.nonEmpty) totalWords(pages) / pages.length
+            else 0}"
         )
     }
   }
@@ -69,5 +75,9 @@ object Main extends App {
       val words = (result \ "wordcount").as[Int]
       WikiPage(title, words)
     }
+  }
+
+  def totalWords(pages: Seq[WikiPage]): Int = {
+    pages.foldLeft(0)((total, page) => total + page.words)
   }
 }
