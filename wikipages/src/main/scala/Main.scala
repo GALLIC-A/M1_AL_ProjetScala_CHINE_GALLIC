@@ -21,7 +21,7 @@ object Main extends App {
         opt[String]('k', "keyword")
           .required()
           .withFallback(() => "Scala") // Valeur par défaut : "Scala"
-          .action((k, c) => c.copy(keyword = k)),
+          .action((k, c) => c.copy(keyword = k))
       )
     }
 
@@ -30,5 +30,9 @@ object Main extends App {
 
   def run(config: Config): Unit = {
     println(config)
+  }
+
+  def formatUrl(keyword: String, limit: Int): String = {
+    s"https://en.wikipedia.org/w/api.php?action=query&format=json&prop=&sroffset=0&list=search&srsearch=${keyword}&srlimit=${limit}"
   }
 }
