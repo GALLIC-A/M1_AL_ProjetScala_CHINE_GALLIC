@@ -24,4 +24,26 @@ class MainSpec extends AnyFlatSpec {
 
     assert(actualPages == expectedPages)
   }
+
+  "totalWords" should "return 0 for an empty list of pages" in {
+    val emptyPages = Seq.empty[WikiPage]
+
+    val total = Main.totalWords(emptyPages)
+
+    assert(total == 0)
+  }
+
+  it should "return the correct total number of words for a non-empty list of pages" in {
+    val pages = Seq(
+      WikiPage("Page 1", 100),
+      WikiPage("Page 2", 150),
+      WikiPage("Page 3", 200)
+    )
+
+    val expectedTotal = 450 // 100 + 200 + 150
+
+    val total = Main.totalWords(pages)
+
+    assert(total == expectedTotal)
+  }
 }
