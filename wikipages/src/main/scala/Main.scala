@@ -30,7 +30,12 @@ object Main extends App {
   }
 
   def run(config: Config): Unit = {
-    println(config)
+    // println(config)
+    val url = formatUrl(config.keyword, config.limit)
+    getPages(url) match {
+      case Left(errorCode) => println(s"Une erreur est survenue : $errorCode")
+      case Right(body)     => println(body)
+    }
   }
 
   def formatUrl(keyword: String, limit: Int): String = {
@@ -39,7 +44,7 @@ object Main extends App {
 
   def getPages(url: String): Either[Int, String] = {
     val result = Http(url).asString
-    if(result.code != 200) {
+    if (result.code != 200) {
       Left(result.code)
     } else {
       Right(result.body)
