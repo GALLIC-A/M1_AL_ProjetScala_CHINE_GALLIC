@@ -1,9 +1,30 @@
+import MockHttpUtils.mock
 import http.HttpUtils
 import org.scalatest.flatspec.AnyFlatSpec
 import org.mockito.scalatest.MockitoSugar
 import scalaj.http.{HttpRequest, HttpResponse}
+import org.mockito.ArgumentMatchersSugar._
+import org.mockito.Mockito._
 
 class MainSpec extends AnyFlatSpec {
+
+  "Main.run" should "call the necessary methods and print correct output" in {
+    val config = Config(limit = 10, keyword = "Scala")
+    val httpUtils = MockHttpUtils
+
+    val outContent = new java.io.ByteArrayOutputStream()
+    Console.withOut(new java.io.PrintStream(outContent)) {
+      Main.run(config, httpUtils)
+    }
+
+    val output = outContent.toString
+    assert(output.contains("Nombre de pages trouvees : 2"))
+    assert(output.contains("Titre : Scala, Nombre de mots : 100"))
+    assert(output.contains("Titre : Java, Nombre de mots : 200"))
+    assert(output.contains("Nombre total de mots : 300"))
+    assert(output.contains("Nombre de mots moyen par page : 150"))
+  }
+
   "formatUrl" should "return the correct URL" in {
     val keyword = "scalatest"
     val limit = 5
