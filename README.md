@@ -1,4 +1,4 @@
-Here is the code coverage report in markdown format for a Java project:
+[Google Slides for this project](https://docs.google.com/presentation/d/1oQS_NJ7TLg6Beny7evHeEdxto1foAqiKCFrnaiIV4sY/edit?usp=sharing "Google Slides for this project")
 
 ## Code Coverage Report
 
