@@ -1,0 +1,30 @@
+name: Scala Format Check
+
+on: push
+
+jobs:
+  format-check:
+    runs-on: ubuntu-latest
+    steps:
+
+      - uses: actions/checkout@v2
+
+      - name: Set up Scala and SBT
+        uses: olafurpg/setup-scala@v10
+        with:
+          java-version: adopt@1.11
+
+      - name: Cache SBT
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.sbt
+            ~/.ivy2/cache
+            ~/.coursier/cache/v1
+            ~/.cache/coursier/v1
+            ~/AppData/Local/Coursier/Cache/v1
+            ~/Library/Caches/Coursier/v1
+          key: ${{ runner.os }}-sbt-cache-v2-${{ hashFiles('wikipages/**/.sbt') }}-${{ hashFiles('wikipages/project/build.properties') }}
+          
+      - name: Check formatting with scalafmt
+        run: cd wikipages && sbt scalafmtCheckAll
